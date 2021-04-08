@@ -30,7 +30,7 @@ import type { Account, AccountLike, Operation } from "@ledgerhq/live-common/lib/
 
 import { urls } from "~/config/urls";
 import { openModal } from "~/renderer/actions/modals";
-import TrackPage from "~/renderer/analytics/TrackPage";
+import TrackPage, { setTrackingSource } from "~/renderer/analytics/TrackPage";
 import Box from "~/renderer/components/Box";
 import Button from "~/renderer/components/Button";
 import CopyWithFeedback from "~/renderer/components/CopyWithFeedback";
@@ -68,6 +68,7 @@ import {
   HashContainer,
 } from "./styledComponents";
 import ToolTip from "~/renderer/components/Tooltip";
+import AccountTagDerivationMode from "~/renderer/components/AccountTagDerivationMode";
 
 const mapStateToProps = (state, { operationId, accountId, parentId }) => {
   const marketIndicator = marketIndicatorSelector(state);
@@ -193,7 +194,8 @@ const OperationDetails: React$ComponentType<OwnProps> = connect(mapStateToProps)
   const goToMainAccount = useCallback(() => {
     const url = `/account/${mainAccount.id}`;
     if (location !== url) {
-      history.push({ pathname: url, state: { source: "operation details" } });
+      setTrackingSource("operation details");
+      history.push({ pathname: url });
     }
     onClose();
   }, [mainAccount, history, onClose, location]);
@@ -201,7 +203,8 @@ const OperationDetails: React$ComponentType<OwnProps> = connect(mapStateToProps)
   const goToSubAccount = useCallback(() => {
     const url = `/account/${mainAccount.id}/${account.id}`;
     if (location !== url) {
-      history.push({ pathname: url, state: { source: "operation details" } });
+      setTrackingSource("operation details");
+      history.push({ pathname: url });
     }
     onClose();
   }, [mainAccount, account, history, onClose, location]);
@@ -374,16 +377,27 @@ const OperationDetails: React$ComponentType<OwnProps> = connect(mapStateToProps)
             <Box flex={1}>
               <OpDetailsTitle>{t("operationDetails.account")}</OpDetailsTitle>
               <OpDetailsData horizontal>
-                <TextEllipsis style={parentAccount ? { maxWidth: "50%", flexShrink: 0 } : {}}>
-                  <Link onClick={goToMainAccount}>{name}</Link>
-                </TextEllipsis>
+                <Box
+                  horizontal
+                  alignItems="center"
+                  flex="1"
+                  style={parentAccount ? { maxWidth: "50%", flexShrink: 0 } : {}}
+                >
+                  <TextEllipsis>
+                    <Link onClick={goToMainAccount}>{name}</Link>
+                  </TextEllipsis>
+                  <AccountTagDerivationMode account={account} />
+                </Box>
 
                 {parentAccount ? (
                   <>
                     <Separator>{"/"}</Separator>
-                    <TextEllipsis>
-                      <Link onClick={goToSubAccount}>{currency.name}</Link>
-                    </TextEllipsis>
+                    <Box horizontal alignItems="center" flex="1">
+                      <TextEllipsis>
+                        <Link onClick={goToSubAccount}>{currency.name}</Link>
+                      </TextEllipsis>
+                      <AccountTagDerivationMode account={parentAccount} />
+                    </Box>
                   </>
                 ) : null}
               </OpDetailsData>
@@ -556,7 +570,9 @@ const OperationDetailsExtra = ({ extra }: OperationDetailsExtraProps) => {
       <OpDetailsTitle>
         <Trans i18nKey={`operationDetails.extra.${key}`} defaults={key} />
       </OpDetailsTitle>
-      <OpDetailsData>{value}</OpDetailsData>
+      <OpDetailsData>
+        <Ellipsis>{value}</Ellipsis>
+      </OpDetailsData>
     </Box>
   ));
 };

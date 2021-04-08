@@ -6,7 +6,7 @@ import { useSelector, connect } from "react-redux";
 import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
 import type { Account, AccountLike } from "@ledgerhq/live-common/lib/types";
-import { swapSupportedCurrenciesSelector } from "~/renderer/reducers/settings";
+import { flattenedSwapSupportedCurrenciesSelector } from "~/renderer/reducers/settings";
 import Tooltip from "~/renderer/components/Tooltip";
 import {
   isAccountEmpty,
@@ -35,6 +35,7 @@ import Text from "~/renderer/components/Text";
 import Graph from "~/renderer/icons/Graph";
 import IconAngleDown from "~/renderer/icons/AngleDown";
 import IconAngleUp from "~/renderer/icons/AngleUp";
+import { setTrackingSource } from "~/renderer/analytics/TrackPage";
 
 const ButtonSettings: ThemedComponent<{ disabled?: boolean }> = styled(Tabbable).attrs(() => ({
   alignItems: "center",
@@ -90,16 +91,16 @@ const AccountHeaderActions = ({
 
   const availableOnBuy = isCurrencySupported("BUY", currency);
   const availableOnSell = isCurrencySupported("SELL", currency);
-  const availableOnSwap = useSelector(swapSupportedCurrenciesSelector);
+  const availableOnSwap = useSelector(flattenedSwapSupportedCurrenciesSelector);
   const history = useHistory();
 
   const onBuy = useCallback(() => {
+    setTrackingSource("account header actions");
     history.push({
       pathname: "/exchange",
       state: {
         defaultCurrency: currency,
         defaultAccount: mainAccount,
-        source: "account header actions",
       },
     });
   }, [currency, history, mainAccount]);
@@ -111,6 +112,7 @@ const AccountHeaderActions = ({
   }, [openModal, summary]);
 
   const onSell = useCallback(() => {
+    setTrackingSource("account header actions");
     history.push({
       pathname: "/exchange",
       state: {
@@ -122,13 +124,13 @@ const AccountHeaderActions = ({
   }, [currency, history, mainAccount]);
 
   const onSwap = useCallback(() => {
+    setTrackingSource("account header actions");
     history.push({
       pathname: "/swap",
       state: {
         defaultCurrency: currency,
         defaultAccount: account,
         defaultParentAccount: parentAccount,
-        source: "account header actions",
       },
     });
   }, [currency, history, account, parentAccount]);

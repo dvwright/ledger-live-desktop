@@ -5,17 +5,11 @@ import styled from "styled-components";
 import { Trans } from "react-i18next";
 import Text from "~/renderer/components/Text";
 import type { ThemedComponent } from "~/renderer/styles/StyleProvider";
-
-export const Wrapper: ThemedComponent<{}> = styled.div`
-  display: flex;
-  flex-direction: row;
-  padding: 16px 20px;
-  border-bottom: 1px solid ${p => p.theme.colors.palette.divider};
-`;
+import { HeaderWrapper } from "~/renderer/components/TableContainer";
 
 export const TableLine: ThemedComponent<{}> = styled(Text).attrs(() => ({
   ff: "Inter|SemiBold",
-  color: "palette.text.shade60",
+  color: "palette.text.shade50",
   fontSize: 3,
 }))`
   flex: 1.25;
@@ -29,18 +23,21 @@ export const TableLine: ThemedComponent<{}> = styled(Text).attrs(() => ({
   }
 `;
 
-const Header = ({ type }: { type: "open" | "close" }) => (
-  <Wrapper>
-    <TableLine>
-      <Trans i18nKey={`lend.account.${type === "close" ? "amountRedeemed" : "amountSupplied"}`} />
-    </TableLine>
-    <TableLine>
-      <Trans i18nKey="lend.account.interestEarned" />
-    </TableLine>
-    <TableLine>
-      <Trans i18nKey="lend.account.date" />
-    </TableLine>
-  </Wrapper>
-);
+const Header = ({ type }: { type: "open" | "close" }) => {
+  const key = type === "close" ? "amountRedeemed" : "amountSupplied";
+  return (
+    <HeaderWrapper>
+      <TableLine>
+        <Trans i18nKey={`lend.account.${key}`} />
+      </TableLine>
+      <TableLine>
+        <Trans i18nKey="lend.account.interestEarned" />
+      </TableLine>
+      <TableLine>
+        <Trans i18nKey="lend.account.date" />
+      </TableLine>
+    </HeaderWrapper>
+  );
+};
 
 export default Header;

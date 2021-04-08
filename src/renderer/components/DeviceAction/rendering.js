@@ -1,5 +1,6 @@
 // @flow
 import React, { useCallback } from "react";
+import { BigNumber } from "bignumber.js";
 import map from "lodash/map";
 import { Trans } from "react-i18next";
 import { connect } from "react-redux";
@@ -22,6 +23,7 @@ import TranslatedError from "~/renderer/components/TranslatedError";
 import Text from "~/renderer/components/Text";
 import Box from "~/renderer/components/Box";
 import BigSpinner from "~/renderer/components/BigSpinner";
+import LabelInfoTooltip from "~/renderer/components/LabelInfoTooltip";
 import InfoBox from "~/renderer/components/InfoBox";
 import ConnectTroubleshooting from "~/renderer/components/ConnectTroubleshooting";
 import ExportLogsButton from "~/renderer/components/ExportLogsButton";
@@ -34,6 +36,8 @@ import SupportLinkError from "~/renderer/components/SupportLinkError";
 import { openURL } from "~/renderer/linking";
 import { urls } from "~/config/urls";
 import CurrencyUnitValue from "~/renderer/components/CurrencyUnitValue";
+import ExternalLinkButton from "../ExternalLinkButton";
+import { setTrackingSource } from "~/renderer/analytics/TrackPage";
 
 const AnimationWrapper: ThemedComponent<{ modelId: DeviceModelId }> = styled.div`
   width: 600px;
@@ -166,10 +170,10 @@ const OpenManagerBtn = ({
 }) => {
   const history = useHistory();
   const onClick = useCallback(() => {
+    setTrackingSource("device action open manager button");
     history.push({
       pathname: "manager",
       search: appName ? `?q=${appName}` : "",
-      state: { source: "device action open manager button" },
     });
     closeAllModal();
   }, [history, appName, closeAllModal]);
@@ -281,11 +285,13 @@ export const renderError = ({
   onRetry,
   withExportLogs,
   list,
+  supportLink,
 }: {
   error: Error,
   onRetry?: () => void,
   withExportLogs?: boolean,
   list?: boolean,
+  supportLink?: string,
 }) => (
   <Wrapper id={`error-${error.name}`}>
     <Logo>
@@ -305,12 +311,16 @@ export const renderError = ({
       </ErrorDescription>
     ) : null}
     <ButtonContainer>
+      {supportLink ? (
+        <ExternalLinkButton label={<Trans i18nKey="common.getSupport" />} url={supportLink} />
+      ) : null}
       {withExportLogs ? (
         <ExportLogsButton
           title={<Trans i18nKey="settings.exportLogs.title" />}
           small={false}
           primary={false}
           outlineGrey
+          mx={1}
         />
       ) : null}
       {onRetry ? (
@@ -405,6 +415,8 @@ export const renderSwapDeviceConfirmation = ({
   status,
   exchangeRate,
   exchange,
+  amountExpectedTo,
+  estimatedFees,
 }: {
   modelId: DeviceModelId,
   type: "light" | "dark",
@@ -412,58 +424,100 @@ export const renderSwapDeviceConfirmation = ({
   status: TransactionStatus,
   exchangeRate: ExchangeRate,
   exchange: Exchange,
-}) => (
-  <>
-    <InfoBox onLearnMore={() => openURL(urls.swap.learnMore)} horizontal={false}>
-      <Trans i18nKey="DeviceAction.swap.notice" />
-    </InfoBox>
-    <Box id="swap-modal-device-confirm" alignItems={"center"} mt={5} mb={5}>
-      <Text textAlign="center" ff="Inter|SemiBold" color="palette.text.shade100" fontSize={5}>
-        <Trans i18nKey="DeviceAction.swap.confirm" />
-      </Text>
-    </Box>
-    {map(
-      {
-        amountSent: (
-          <CurrencyUnitValue
-            unit={getAccountUnit(exchange.fromAccount)}
-            value={transaction.amount}
-            disableRounding
-            showCode
-          />
-        ),
-        amountReceived: (
-          <CurrencyUnitValue
-            unit={getAccountUnit(exchange.toAccount)}
-            value={transaction.amount.times(exchangeRate.magnitudeAwareRate)}
-            disableRounding
-            showCode
-          />
-        ),
-        fees: (
-          <CurrencyUnitValue
-            unit={getAccountUnit(getMainAccount(exchange.fromAccount, exchange.fromParentAccount))}
-            value={status.estimatedFees}
-            disableRounding
-            showCode
-          />
-        ),
-        provider: exchangeRate.provider,
-      },
-      (value, key) => (
-        <Box horizontal justifyContent="space-between" key={key} mb={2} ml="12px" mr="12px">
-          <Text fontWeight="500" color="palette.text.shade40" fontSize={3}>
-            <Trans i18nKey={`DeviceAction.swap.${key}`} />
-          </Text>
+  amountExpectedTo?: string,
+  estimatedFees?: string,
+}) => {
+  return (
+    <>
+      <Box mb={3}>
+        <InfoBox onLearnMore={() => openURL(urls.swap.learnMore)} horizontal={false}>
+          <Trans i18nKey="DeviceAction.swap.notice" />
+        </InfoBox>
+      </Box>
+      {map(
+        {
+          amountSent: (
+            <CurrencyUnitValue
+              unit={getAccountUnit(exchange.fromAccount)}
+              value={transaction.amount}
+              disableRounding
+              showCode
+            />
+          ),
+          fees: (
+            <CurrencyUnitValue
+              unit={getAccountUnit(
+                getMainAccount(exchange.fromAccount, exchange.fromParentAccount),
+              )}
+              value={BigNumber(estimatedFees || 0)}
+              disableRounding
+              showCode
+            />
+          ),
+          amountReceived: (
+            <CurrencyUnitValue
+              unit={getAccountUnit(exchange.toAccount)}
+              value={amountExpectedTo ? BigNumber(amountExpectedTo) : exchangeRate.toAmount}
+              disableRounding
+              showCode
+            />
+          ),
+        },
+        (value, key) => {
+          const maybeModifiedKey =
+            key === "amountReceived" && exchangeRate.tradeMethod === "float"
+              ? "amountReceivedFloat"
+              : key;
+          return (
+            <Box
+              horizontal
+              justifyContent="space-between"
+              key={maybeModifiedKey}
+              mb={2}
+              ml="12px"
+              mr="12px"
+            >
+              <Text fontWeight="500" color="palette.text.shade40" fontSize={3}>
+                <Trans i18nKey={`DeviceAction.swap.${maybeModifiedKey}`} />
+              </Text>
+              <Text color="palette.text.shade80" fontWeight="500" fontSize={3}>
+                {value}
+              </Text>
+            </Box>
+          );
+        },
+      )}
+      {exchangeRate.payoutNetworkFees ? (
+        <Box
+          horizontal
+          justifyContent="space-between"
+          key={"payoutNetworkFees"}
+          mb={2}
+          ml="12px"
+          mr="12px"
+        >
+          <LabelInfoTooltip
+            text={<Trans i18nKey={"DeviceAction.swap.payoutNetworkFeesTooltip"} />}
+            style={{ marginLeft: 4 }}
+          >
+            <Text fontWeight="500" color="palette.text.shade40" fontSize={3}>
+              <Trans i18nKey={"DeviceAction.swap.payoutNetworkFees"} />
+            </Text>
+          </LabelInfoTooltip>
           <Text color="palette.text.shade80" fontWeight="500" fontSize={3}>
-            {value}
+            <CurrencyUnitValue
+              unit={getAccountUnit(exchange.toAccount)}
+              value={exchangeRate.payoutNetworkFees}
+              disableRounding
+              showCode
+            />
           </Text>
         </Box>
-      ),
-    )}
-    {renderVerifyUnwrapped({ modelId, type })}
-  </>
-);
+      ) : null}
+      {renderVerifyUnwrapped({ modelId, type })}
+    </>
+  );
+};
 
 export const renderSellDeviceConfirmation = ({
   modelId,

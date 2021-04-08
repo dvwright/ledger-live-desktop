@@ -30,6 +30,7 @@ import IconPen from "~/renderer/icons/Pen";
 import IconCross from "~/renderer/icons/Cross";
 import IconCheck from "~/renderer/icons/Check";
 import { updateAccount } from "~/renderer/actions/accounts";
+import AccountTagDerivationMode from "~/renderer/components/AccountTagDerivationMode";
 
 const CurName = styled(Text).attrs(() => ({
   ff: "Inter|SemiBold",
@@ -37,6 +38,8 @@ const CurName = styled(Text).attrs(() => ({
 }))`
   text-transform: uppercase;
   letter-spacing: 1px;
+  display: flex;
+  align-items: center;
 `;
 
 const CurNameToken = styled(Text).attrs(() => ({
@@ -76,6 +79,7 @@ const Wrapper = styled(Box)`
 `;
 
 const AccountNameBox = styled(Box)`
+  width: 100%;
   position: relative;
   left: -11px;
 `;
@@ -90,10 +94,11 @@ const AccountName = styled.input`
   border-radius: 4px;
   padding: 1px 9px 2px;
   max-width: 250px !important;
+  width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block;
+  display: inline-block;
   background-color: transparent;
 
   + svg {
@@ -113,7 +118,6 @@ const AccountName = styled.input`
     max-width: 190px !important;
     border-color: ${p => p.theme.colors.wallet};
     background: ${p => (p.theme.colors.palette.type === "light" ? "#fff" : "none")};
-    width: 250px;
 
     + svg {
       display: none;
@@ -217,9 +221,11 @@ const AccountHeader: React$ComponentType<Props> = React.memo(function AccountHea
             </Wrapper>
           </Box>
         ) : (
-          <CurName>{currency.name}</CurName>
+          <CurName>
+            {currency.name} <AccountTagDerivationMode account={account} />
+          </CurName>
         )}
-        <AccountNameBox horizontal alignItems="center" flow={2}>
+        <AccountNameBox horizontal alignItems="center" pr={8} flow={2}>
           <AccountName
             color="palette.text.shade100"
             disabled={account.type !== "Account"}

@@ -1,7 +1,7 @@
 // @flow
 import React from "react";
 import styled from "styled-components";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 // icons
 import IconHelp from "~/renderer/icons/Help";
 import IconGithub from "~/renderer/icons/Github";
@@ -14,7 +14,7 @@ import IconChevronRight from "~/renderer/icons/ChevronRight";
 import { openURL } from "~/renderer/linking";
 import Text from "~/renderer/components/Text";
 import TrackPage from "~/renderer/analytics/TrackPage";
-import { SideDrawer } from "~/renderer/components/Onboarding/SideDrawer";
+import { SideDrawer } from "~/renderer/components/SideDrawer";
 import Box from "~/renderer/components/Box";
 import { urls } from "~/config/urls";
 
@@ -84,7 +84,7 @@ const HelpSideDrawer = ({ isOpened, onClose }: { isOpened: boolean, onClose: () 
 
         <Box py={60}>
           <Text ff="Inter|SemiBold" fontSize={22} mb={20} color={"palette.text.shade100"}>
-            {"Help & support"}
+            <Trans i18nKey="help.title" />
           </Text>
           <Item
             title={t("help.gettingStarted.title")}

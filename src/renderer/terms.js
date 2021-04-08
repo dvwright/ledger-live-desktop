@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import network from "@ledgerhq/live-common/lib/network";
 import { useSelector } from "react-redux";
 import { languageSelector } from "~/renderer/reducers/settings";
+import { urls } from "~/config/urls";
 
 const getRawLanguageURL = (language: string) =>
-  `https://raw.githubusercontent.com/LedgerHQ/ledger-live-desktop/master/TERMS-${language}.md`;
+  `https://raw.githubusercontent.com/LedgerHQ/ledger-live-desktop/master/TERM.${language}.md`;
 const rawDefaultURL =
   "https://raw.githubusercontent.com/LedgerHQ/ledger-live-desktop/master/TERMS.md";
 export const url = "https://github.com/LedgerHQ/ledger-live-desktop/blob/master/TERMS.md";
@@ -53,4 +54,15 @@ export const useTerms = () => {
   }, [language]);
 
   return [terms, error];
+};
+
+export const usePrivacyUrl = () => {
+  const [privacyUrl, setPrivacyUrl] = useState(urls.privacyPolicy.en);
+
+  const language = useSelector(languageSelector);
+  useEffect(() => {
+    setPrivacyUrl(urls.privacyPolicy[language] || urls.privacyPolicy.en);
+  }, [language]);
+
+  return privacyUrl;
 };
