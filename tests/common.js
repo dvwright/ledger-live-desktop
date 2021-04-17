@@ -12,14 +12,16 @@ import AccountPage from "./po/account.page";
 import PortfolioPage from "./po/portfolio.page";
 import SettingsPage from "./po/settings.page";
 import ManagerPage from "./po/manager.page";
-import AddAccountModal from "./po/addAccountModal.page";
+import AddAccountsModal from "./po/addAccountsModal.page";
 import AccountSettingsModal from "./po/accountSettingsModal.page";
 import ExportOperationsModal from "./po/exportOperationsHistoryModal.page";
 import ExportAccountsModal from "./po/exportAccountsModal.page";
+import ReceiveModal from "./po/receiveModal.page.js";
 import HideTokenModal from "./po/hideTokenModal.page";
 import fs from "fs";
 import rimraf from "rimraf";
 import path from "path";
+import electronPath from "electron";
 
 // instead of making a PR to spectron we override the way they launch chromedriver
 // chromedriver is launched automatically in the docker container
@@ -59,6 +61,7 @@ let addAccountsModal;
 let accountSettingsModal;
 let exportOperationsHistoryModal;
 let exportAccountsModal;
+let receiveModal;
 let hideTokenModal;
 let mockDeviceEvent;
 let userDataPath;
@@ -96,6 +99,7 @@ export default function initialize(name, { userData, env = {}, disableStartSnap 
         HIDE_DEBUG_MOCK: true,
         DISABLE_DEV_TOOLS: true,
         SPECTRON_RUN: true,
+        CI: process.env.CI || "",
       },
       env,
     );
@@ -105,21 +109,27 @@ export default function initialize(name, { userData, env = {}, disableStartSnap 
       fs.copyFileSync(jsonFile, `${userDataPath}/app.json`);
     }
 
+    const appPath = !process.env.CI ? "/app" : path.join(__dirname, "..");
+    const spectronPath = !process.env.CI
+      ? `${appPath}/node_modules/electron/dist/electron`
+      : electronPath;
+
     app = new Application({
-      path: require("electron"), // just to make spectron happy since we override everything below
+      path: electronPath, // just to make spectron happy since we override everything below
       waitTimeout: 15000,
       webdriverOptions: {
         capabilities: {
           "goog:chromeOptions": {
-            binary: "/app/node_modules/spectron/lib/launcher.js",
+            binary: `${appPath}/node_modules/spectron/lib/launcher.js`,
             args: [
-              "spectron-path=/app/node_modules/electron/dist/electron",
-              "spectron-arg0=/app/.webpack/main.bundle.js",
+              `spectron-path=${spectronPath}`,
+              `spectron-arg0=${appPath}/.webpack/main.bundle.js`,
               "--disable-extensions",
               "--disable-dev-shm-usage",
               "--no-sandbox",
               "--lang=en",
-              `--user-data-dir=/app/tests/tmp/${userDataPathKey}`,
+              "--font-render-hinting=none",
+              `--user-data-dir=${appPath}/tests/tmp/${userDataPathKey}`,
             ].concat(_.map(env, (value, key) => `spectron-env-${key}=${value.toString()}`)),
             debuggerAddress: undefined,
             windowTypes: ["app", "webview"],
@@ -135,10 +145,11 @@ export default function initialize(name, { userData, env = {}, disableStartSnap 
     portfolioPage = new PortfolioPage(app);
     settingsPage = new SettingsPage(app);
     managerPage = new ManagerPage(app);
-    addAccountsModal = new AddAccountModal(app);
+    addAccountsModal = new AddAccountsModal(app);
     accountSettingsModal = new AccountSettingsModal(app);
     exportOperationsHistoryModal = new ExportOperationsModal(app);
     exportAccountsModal = new ExportAccountsModal(app);
+    receiveModal = new ReceiveModal(app);
     hideTokenModal = new HideTokenModal(app);
     mockDeviceEvent = getMockDeviceEvent(app);
 
@@ -238,5 +249,6 @@ export {
   accountSettingsModal,
   exportOperationsHistoryModal,
   exportAccountsModal,
+  receiveModal,
   userDataPath,
 };
