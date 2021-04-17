@@ -80,8 +80,8 @@ function Body({
     bridgePending,
     status,
   } = useBridgeTransaction(() => {
-    invariant(accountProp.cosmosResources, "cosmos: account and cosmos resources required");
-    const delegations = accountProp.cosmosResources.delegations || [];
+    invariant(accountProp.solanaResources, "solana: account and solana resources required");
+    const delegations = accountProp.solanaResources.delegations || [];
     const bridge = getAccountBridge(accountProp, undefined);
 
     const initTx = bridge.createTransaction(accountProp);
@@ -144,7 +144,7 @@ function Body({
   }
 
   const stepperProps = {
-    title: t("cosmos.undelegation.flow.title"),
+    title: t("solana.undelegation.flow.title"),
     device,
     account,
     transaction,

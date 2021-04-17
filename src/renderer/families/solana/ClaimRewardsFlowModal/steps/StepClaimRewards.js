@@ -33,7 +33,7 @@ export default function StepClaimRewards({
   t,
 }: StepProps) {
   const locale = useSelector(localeSelector);
-  invariant(account && account.cosmosResources && transaction, "account and transaction required");
+  invariant(account && account.solanaResources && transaction, "account and transaction required");
   const bridge = getAccountBridge(account, parentAccount);
 
   const unit = getAccountUnit(account);
@@ -82,7 +82,7 @@ export default function StepClaimRewards({
       {amount && (
         <Text fontSize={4} ff="Inter|Medium" textAlign="center">
           <Trans
-            i18nKey={`cosmos.claimRewards.flow.steps.claimRewards.${
+            i18nKey={`solana.claimRewards.flow.steps.claimRewards.${
               transaction.mode === "claimReward" ? "claimInfo" : "compoundInfo"
             }`}
             values={{ amount }}

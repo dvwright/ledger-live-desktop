@@ -1,11 +1,11 @@
 // @flow
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useCosmosDelegationsQuerySelector } from "@ledgerhq/live-common/lib/families/cosmos/react";
+import { useSolanaDelegationsQuerySelector } from "@ledgerhq/live-common/lib/families/solana/react";
 import type {
   Transaction,
-  CosmosMappedDelegation,
-} from "@ledgerhq/live-common/lib/families/cosmos/types";
+  SolanaMappedDelegation,
+} from "@ledgerhq/live-common/lib/families/solana/types";
 import type { Account } from "@ledgerhq/live-common/lib/types";
 import FirstLetterIcon from "~/renderer/components/FirstLetterIcon";
 import Box from "~/renderer/components/Box";
@@ -16,19 +16,19 @@ import Text from "~/renderer/components/Text";
 type Props = {
   account: Account,
   transaction: Transaction,
-  onChange: (delegaiton: CosmosMappedDelegation) => void,
+  onChange: (delegaiton: SolanaMappedDelegation) => void,
 };
 
 export default function ValidatorField({ account, transaction, onChange }: Props) {
   const { t } = useTranslation();
-  const { query, setQuery, options, value } = useCosmosDelegationsQuerySelector(
+  const { query, setQuery, options, value } = useSolanaDelegationsQuerySelector(
     account,
     transaction,
   );
 
   return (
     <Box mb={4}>
-      <Label>{t("cosmos.undelegation.flow.steps.amount.fields.validator")}</Label>
+      <Label>{t("solana.undelegation.flow.steps.amount.fields.validator")}</Label>
       <Select
         value={value}
         options={options}
@@ -43,7 +43,7 @@ export default function ValidatorField({ account, transaction, onChange }: Props
 }
 
 type OptionRowProps = {
-  data: CosmosMappedDelegation,
+  data: SolanaMappedDelegation,
 };
 
 function OptionRow({ data: { validatorAddress, validator, formattedAmount } }: OptionRowProps) {

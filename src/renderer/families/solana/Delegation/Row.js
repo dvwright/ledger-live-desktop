@@ -7,15 +7,15 @@ import moment from "moment";
 
 import type { ThemedComponent } from "~/renderer/styles/StyleProvider";
 import type {
-  CosmosMappedDelegation,
-  CosmosMappedUnbonding,
-} from "@ledgerhq/live-common/lib/families/cosmos/types";
+  SolanaMappedDelegation,
+  SolanaMappedUnbonding,
+} from "@ledgerhq/live-common/lib/families/solana/types";
 import type { Account } from "@ledgerhq/live-common/lib/types";
 import {
   canRedelegate,
   canUndelegate,
   getRedelegationCompletionDate,
-} from "@ledgerhq/live-common/lib/families/cosmos/logic";
+} from "@ledgerhq/live-common/lib/families/solana/logic";
 
 import { TableLine } from "./Header";
 import DropDown, { DropDownItem } from "~/renderer/components/DropDownSelector";
@@ -89,7 +89,7 @@ const ManageDropDownItem = ({
 
 type Props = {
   account: Account,
-  delegation: CosmosMappedDelegation,
+  delegation: SolanaMappedDelegation,
   onManageAction: (
     address: string,
     action: "MODAL_COSMOS_REDELEGATE" | "MODAL_COSMOS_UNDELEGATE" | "MODAL_COSMOS_CLAIM_REWARDS",
@@ -129,18 +129,18 @@ export function Row({
     () => [
       {
         key: "MODAL_COSMOS_REDELEGATE",
-        label: <Trans i18nKey="cosmos.delegation.redelegate" />,
+        label: <Trans i18nKey="solana.delegation.redelegate" />,
         disabled: !_canRedelegate,
         tooltip: !_canRedelegate ? (
           formattedRedelegationDate ? (
             <Trans
-              i18nKey="cosmos.delegation.redelegateDisabledTooltip"
+              i18nKey="solana.delegation.redelegateDisabledTooltip"
               values={{ days: formattedRedelegationDate }}
             >
               <b></b>
             </Trans>
           ) : (
-            <Trans i18nKey="cosmos.delegation.redelegateMaxDisabledTooltip">
+            <Trans i18nKey="solana.delegation.redelegateMaxDisabledTooltip">
               <b></b>
             </Trans>
           )
@@ -148,10 +148,10 @@ export function Row({
       },
       {
         key: "MODAL_COSMOS_UNDELEGATE",
-        label: <Trans i18nKey="cosmos.delegation.undelegate" />,
+        label: <Trans i18nKey="solana.delegation.undelegate" />,
         disabled: !_canUndelegate,
         tooltip: !_canUndelegate ? (
-          <Trans i18nKey="cosmos.delegation.undelegateDisabledTooltip">
+          <Trans i18nKey="solana.delegation.undelegateDisabledTooltip">
             <b></b>
           </Trans>
         ) : null,
@@ -160,7 +160,7 @@ export function Row({
         ? [
             {
               key: "MODAL_COSMOS_CLAIM_REWARDS",
-              label: <Trans i18nKey="cosmos.delegation.reward" />,
+              label: <Trans i18nKey="solana.delegation.reward" />,
             },
           ]
         : []),
@@ -185,13 +185,13 @@ export function Row({
       <Column>
         {status === "bonded" ? (
           <Box color="positiveGreen" pl={2}>
-            <ToolTip content={<Trans i18nKey="cosmos.delegation.activeTooltip" />}>
+            <ToolTip content={<Trans i18nKey="solana.delegation.activeTooltip" />}>
               <CheckCircle size={14} />
             </ToolTip>
           </Box>
         ) : (
           <Box color="alertRed" pl={2}>
-            <ToolTip content={<Trans i18nKey="cosmos.delegation.inactiveTooltip" />}>
+            <ToolTip content={<Trans i18nKey="solana.delegation.inactiveTooltip" />}>
               <ExclamationCircleThin size={14} />
             </ToolTip>
           </Box>
@@ -216,7 +216,7 @@ export function Row({
 }
 
 type UnbondingRowProps = {
-  delegation: CosmosMappedUnbonding,
+  delegation: SolanaMappedUnbonding,
   onExternalLink: (address: string) => void,
 };
 
@@ -243,7 +243,7 @@ export function UnbondingRow({
       </Column>
       <Column>
         <Box color="alertRed" pl={2}>
-          <ToolTip content={<Trans i18nKey="cosmos.undelegation.inactiveTooltip" />}>
+          <ToolTip content={<Trans i18nKey="solana.undelegation.inactiveTooltip" />}>
             <ExclamationCircleThin size={14} />
           </ToolTip>
         </Box>

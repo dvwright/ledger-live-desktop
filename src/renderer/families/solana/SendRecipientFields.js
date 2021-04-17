@@ -11,9 +11,9 @@ const Root = (props: *) => {
     <Box flow={1}>
       <Box mb={10}>
         <Label>
-          <LabelInfoTooltip text={<Trans i18nKey="families.cosmos.memoWarningText" />}>
+          <LabelInfoTooltip text={<Trans i18nKey="families.solana.memoWarningText" />}>
             <span>
-              <Trans i18nKey="families.cosmos.memo" />
+              <Trans i18nKey="families.solana.memo" />
             </span>
           </LabelInfoTooltip>
         </Label>

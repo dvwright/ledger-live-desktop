@@ -25,11 +25,11 @@ export default function StepDelegation({
   invariant(account && transaction && transaction.validators, "account and transaction required");
   const bridge = getAccountBridge(account, parentAccount);
 
-  const { cosmosResources } = account;
+  const { solanaResources } = account;
 
-  invariant(cosmosResources, "cosmosResources required");
+  invariant(solanaResources, "solanaResources required");
 
-  const delegations = cosmosResources.delegations || [];
+  const delegations = solanaResources.delegations || [];
 
   const updateDelegation = useCallback(
     updater => {

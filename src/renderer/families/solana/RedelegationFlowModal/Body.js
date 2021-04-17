@@ -59,26 +59,26 @@ type Props = OwnProps & StateProps;
 const steps: Array<St> = [
   {
     id: "validators",
-    label: <Trans i18nKey="cosmos.redelegation.flow.steps.validators.title" />,
+    label: <Trans i18nKey="solana.redelegation.flow.steps.validators.title" />,
     component: StepValidators,
     noScroll: true,
     footer: StepValidatorsFooter,
   },
   {
     id: "connectDevice",
-    label: <Trans i18nKey="cosmos.redelegation.flow.steps.device.title" />,
+    label: <Trans i18nKey="solana.redelegation.flow.steps.device.title" />,
     component: GenericStepConnectDevice,
     onBack: ({ transitionTo }: StepProps) => transitionTo("castRedelegations"),
   },
   {
     id: "confirmation",
-    label: <Trans i18nKey="cosmos.redelegation.flow.steps.confirmation.title" />,
+    label: <Trans i18nKey="solana.redelegation.flow.steps.confirmation.title" />,
     component: StepConfirmation,
     footer: StepConfirmationFooter,
   },
   {
     id: "destinationValidators",
-    label: <Trans i18nKey="cosmos.redelegation.flow.steps.validators.title" />,
+    label: <Trans i18nKey="solana.redelegation.flow.steps.validators.title" />,
     component: StepDestinationValidators,
     noScroll: true,
     excludeFromBreadcrumb: true,
@@ -86,7 +86,7 @@ const steps: Array<St> = [
   },
   {
     id: "starter",
-    label: <Trans i18nKey="cosmos.redelegation.flow.steps.starter.title" />,
+    label: <Trans i18nKey="solana.redelegation.flow.steps.starter.title" />,
     component: StepStarter,
     noScroll: true,
     excludeFromBreadcrumb: true,
@@ -130,9 +130,9 @@ const Body = ({
   } = useBridgeTransaction(() => {
     const { account, validatorAddress } = params;
 
-    invariant(account && account.cosmosResources, "cosmos: account and cosmos resources required");
+    invariant(account && account.solanaResources, "solana: account and solana resources required");
 
-    const source = account.cosmosResources?.delegations.find(
+    const source = account.solanaResources?.delegations.find(
       d => d.validatorAddress === validatorAddress,
     );
 
@@ -143,7 +143,7 @@ const Body = ({
     const transaction = bridge.updateTransaction(t, {
       mode: "redelegate",
       validators: [{ address: "", amount: source?.amount ?? BigNumber(0) }],
-      cosmosSourceValidator: validatorAddress,
+      solanaSourceValidator: validatorAddress,
     });
 
     return { account, parentAccount: undefined, transaction };
@@ -192,7 +192,7 @@ const Body = ({
   }
 
   const stepperProps = {
-    title: t("cosmos.redelegation.flow.title"),
+    title: t("solana.redelegation.flow.title"),
     device,
     account,
     parentAccount,

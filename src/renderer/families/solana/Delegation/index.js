@@ -7,10 +7,10 @@ import styled from "styled-components";
 import type { Account } from "@ledgerhq/live-common/lib/types";
 import { getAccountUnit } from "@ledgerhq/live-common/lib/account";
 import {
-  useCosmosPreloadData,
-  useCosmosMappedDelegations,
-} from "@ledgerhq/live-common/lib/families/cosmos/react";
-import { mapUnbondings, canDelegate } from "@ledgerhq/live-common/lib/families/cosmos/logic";
+  useSolanaPreloadData,
+  useSolanaMappedDelegations,
+} from "@ledgerhq/live-common/lib/families/solana/react";
+import { mapUnbondings, canDelegate } from "@ledgerhq/live-common/lib/families/solana/logic";
 import { getDefaultExplorerView, getAddressExplorer } from "@ledgerhq/live-common/lib/explorers";
 
 import { urls } from "~/config/urls";
@@ -47,20 +47,20 @@ const Wrapper = styled(Box).attrs(() => ({
 const Delegation = ({ account }: Props) => {
   const dispatch = useDispatch();
 
-  const { cosmosResources } = account;
-  invariant(cosmosResources, "cosmos account expected");
+  const { solanaResources } = account;
+  invariant(solanaResources, "solana account expected");
   const {
     delegations,
     pendingRewardsBalance: _pendingRewardsBalance,
     /** $FlowFixMe */
     unbondings,
-  } = cosmosResources;
+  } = solanaResources;
 
   const delegationEnabled = canDelegate(account);
 
-  const mappedDelegations = useCosmosMappedDelegations(account);
+  const mappedDelegations = useSolanaMappedDelegations(account);
 
-  const { validators } = useCosmosPreloadData();
+  const { validators } = useSolanaPreloadData();
   const unit = getAccountUnit(account);
 
   const mappedUnbondings = mapUnbondings(unbondings, validators, unit);
@@ -127,14 +127,14 @@ const Delegation = ({ account }: Props) => {
           color="palette.text.shade100"
           data-e2e="title_Delegation"
         >
-          <Trans i18nKey="cosmos.delegation.header" />
+          <Trans i18nKey="solana.delegation.header" />
         </Text>
         {hasDelegations || hasRewards ? (
           <Box horizontal>
             {hasDelegations ? (
               <ToolTip
                 content={
-                  !delegationEnabled ? <Trans i18nKey="cosmos.delegation.minSafeWarning" /> : null
+                  !delegationEnabled ? <Trans i18nKey="solana.delegation.minSafeWarning" /> : null
                 }
               >
                 <Button
@@ -148,13 +148,13 @@ const Delegation = ({ account }: Props) => {
                   <Box horizontal flow={1} alignItems="center">
                     <DelegateIcon size={12} />
                     <Box>
-                      <Trans i18nKey="cosmos.delegation.delegate" />
+                      <Trans i18nKey="solana.delegation.delegate" />
                     </Box>
                   </Box>
                 </Button>
               </ToolTip>
             ) : null}
-            <ToolTip content={!hasRewards ? <Trans i18nKey="cosmos.delegation.noRewards" /> : null}>
+            <ToolTip content={!hasRewards ? <Trans i18nKey="solana.delegation.noRewards" /> : null}>
               <Button
                 id={"account-rewards-button"}
                 disabled={!hasRewards}
@@ -165,7 +165,7 @@ const Delegation = ({ account }: Props) => {
                 <Box horizontal flow={1} alignItems="center">
                   <ClaimRewards size={12} />
                   <Box>
-                    <Trans i18nKey="cosmos.delegation.claimRewards" />
+                    <Trans i18nKey="solana.delegation.claimRewards" />
                   </Box>
                 </Box>
               </Button>
@@ -191,28 +191,28 @@ const Delegation = ({ account }: Props) => {
           <Box style={{ maxWidth: "65%" }}>
             <Text ff="Inter|Medium|SemiBold" color="palette.text.shade60" fontSize={4}>
               <Trans
-                i18nKey="cosmos.delegation.emptyState.description"
+                i18nKey="solana.delegation.emptyState.description"
                 values={{ name: account.currency.name }}
               />
             </Text>
             <Box mt={2}>
               <LinkWithExternalIcon
-                label={<Trans i18nKey="cosmos.delegation.emptyState.info" />}
-                onClick={() => openURL(urls.stakingCosmos)}
+                label={<Trans i18nKey="solana.delegation.emptyState.info" />}
+                onClick={() => openURL(urls.stakingSolana)}
               />
             </Box>
           </Box>
           <Box>
             <ToolTip
               content={
-                !delegationEnabled ? <Trans i18nKey="cosmos.delegation.minSafeWarning" /> : null
+                !delegationEnabled ? <Trans i18nKey="solana.delegation.minSafeWarning" /> : null
               }
             >
               <Button primary small disabled={!delegationEnabled} onClick={onEarnRewards}>
                 <Box horizontal flow={1} alignItems="center">
                   <IconChartLine size={12} />
                   <Box>
-                    <Trans i18nKey="cosmos.delegation.emptyState.delegation" />
+                    <Trans i18nKey="solana.delegation.emptyState.delegation" />
                   </Box>
                 </Box>
               </Button>
@@ -223,9 +223,9 @@ const Delegation = ({ account }: Props) => {
       {hasUnbondings ? (
         <>
           <Box horizontal alignItems="center" color="palette.text.shade100">
-            <ToolTip content={<Trans i18nKey="cosmos.undelegation.headerTooltip" />}>
+            <ToolTip content={<Trans i18nKey="solana.undelegation.headerTooltip" />}>
               <Text ff="Inter|Medium" fontSize={6} data-e2e="title_Undelegation">
-                <Trans i18nKey="cosmos.undelegation.header" />
+                <Trans i18nKey="solana.undelegation.header" />
               </Text>
               <Box ml={2} horizontal alignItems="center">
                 <InfoCircle />
@@ -245,7 +245,7 @@ const Delegation = ({ account }: Props) => {
 };
 
 const Delegations = ({ account }: Props) => {
-  if (!account.cosmosResources) return null;
+  if (!account.solanaResources) return null;
 
   return <Delegation account={account} />;
 };

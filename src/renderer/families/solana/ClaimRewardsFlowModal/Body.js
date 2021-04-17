@@ -56,20 +56,20 @@ type Props = OwnProps & StateProps;
 const steps: Array<St> = [
   {
     id: "claimRewards",
-    label: <Trans i18nKey="cosmos.claimRewards.flow.steps.claimRewards.title" />,
+    label: <Trans i18nKey="solana.claimRewards.flow.steps.claimRewards.title" />,
     component: StepClaimRewards,
     noScroll: true,
     footer: StepClaimRewardsFooter,
   },
   {
     id: "connectDevice",
-    label: <Trans i18nKey="cosmos.claimRewards.flow.steps.connectDevice.title" />,
+    label: <Trans i18nKey="solana.claimRewards.flow.steps.connectDevice.title" />,
     component: GenericStepConnectDevice,
     onBack: ({ transitionTo }: StepProps) => transitionTo("claimRewards"),
   },
   {
     id: "confirmation",
-    label: <Trans i18nKey="cosmos.claimRewards.flow.steps.confirmation.title" />,
+    label: <Trans i18nKey="solana.claimRewards.flow.steps.confirmation.title" />,
     component: StepConfirmation,
     footer: StepConfirmationFooter,
   },
@@ -111,10 +111,10 @@ const Body = ({
   } = useBridgeTransaction(() => {
     const { account, validatorAddress } = params;
 
-    invariant(account && account.cosmosResources, "cosmos: account and cosmos resources required");
+    invariant(account && account.solanaResources, "solana: account and solana resources required");
 
     // preselect validator either one from params or the first one available on the list
-    const validators = account.cosmosResources.delegations
+    const validators = account.solanaResources.delegations
       .filter(d =>
         validatorAddress ? d.validatorAddress === validatorAddress : d.pendingRewards.gt(0),
       )
@@ -180,7 +180,7 @@ const Body = ({
   }
 
   const stepperProps = {
-    title: t("cosmos.claimRewards.flow.title"),
+    title: t("solana.claimRewards.flow.title"),
     device,
     account,
     parentAccount,

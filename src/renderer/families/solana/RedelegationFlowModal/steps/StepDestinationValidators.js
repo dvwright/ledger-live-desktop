@@ -20,7 +20,7 @@ export default function StepValidators({
   transitionTo,
   t,
 }: StepProps) {
-  invariant(account && account.cosmosResources && transaction, "account and transaction required");
+  invariant(account && account.solanaResources && transaction, "account and transaction required");
   const bridge = getAccountBridge(account, parentAccount);
 
   const updateRedelegation = useCallback(

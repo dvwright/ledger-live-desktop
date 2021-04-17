@@ -38,11 +38,11 @@ function StepConfirmation({
   if (optimisticOperation) {
     return (
       <Container>
-        <TrackPage category="Redelegation Cosmos Flow" name="Step Confirmed" />
+        <TrackPage category="Redelegation Solana Flow" name="Step Confirmed" />
         <SyncOneAccountOnMount priority={10} accountId={optimisticOperation.accountId} />
         <SuccessDisplay
-          title={<Trans i18nKey="cosmos.redelegation.flow.steps.confirmation.success.title" />}
-          description={multiline(t("cosmos.redelegation.flow.steps.confirmation.success.text"))}
+          title={<Trans i18nKey="solana.redelegation.flow.steps.confirmation.success.title" />}
+          description={multiline(t("solana.redelegation.flow.steps.confirmation.success.text"))}
         />
       </Container>
     );
@@ -51,10 +51,10 @@ function StepConfirmation({
   if (error) {
     return (
       <Container shouldSpace={signed}>
-        <TrackPage category="Redelegation Cosmos Flow" name="Step Confirmation Error" />
+        <TrackPage category="Redelegation Solana Flow" name="Step Confirmation Error" />
         {signed ? (
           <BroadcastErrorDisclaimer
-            title={<Trans i18nKey="cosmos.redelegation.flow.steps.confirmation.broadcastError" />}
+            title={<Trans i18nKey="solana.redelegation.flow.steps.confirmation.broadcastError" />}
           />
         ) : null}
         <ErrorDisplay error={error} withExportLogs />
@@ -91,7 +91,7 @@ export function StepConfirmationFooter({
         <Button
           primary
           ml={2}
-          event="Redelegation Cosmos Flow Step 3 View OpD Clicked"
+          event="Redelegation Solana Flow Step 3 View OpD Clicked"
           onClick={() => {
             onClose();
             if (account && concernedOperation) {
@@ -103,7 +103,7 @@ export function StepConfirmationFooter({
             }
           }}
         >
-          <Trans i18nKey="cosmos.redelegation.flow.steps.confirmation.success.cta" />
+          <Trans i18nKey="solana.redelegation.flow.steps.confirmation.success.cta" />
         </Button>
       ) : error ? (
         <RetryButton primary ml={2} onClick={onRetry} />

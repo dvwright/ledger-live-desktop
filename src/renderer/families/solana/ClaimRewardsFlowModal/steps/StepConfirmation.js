@@ -5,7 +5,7 @@ import { Trans } from "react-i18next";
 import styled, { withTheme } from "styled-components";
 import { useSelector } from "react-redux";
 
-import { useCosmosPreloadData } from "@ledgerhq/live-common/lib/families/cosmos/react";
+import { useSolanaPreloadData } from "@ledgerhq/live-common/lib/families/solana/react";
 import { getAccountUnit } from "@ledgerhq/live-common/lib/account";
 import { formatCurrencyUnit } from "@ledgerhq/live-common/lib/currencies";
 
@@ -41,7 +41,7 @@ function StepConfirmation({
   signed,
   transaction,
 }: StepProps & { theme: * }) {
-  const { validators } = useCosmosPreloadData();
+  const { validators } = useSolanaPreloadData();
   const locale = useSelector(localeSelector);
 
   if (optimisticOperation) {
@@ -58,12 +58,12 @@ function StepConfirmation({
 
     return (
       <Container>
-        <TrackPage category="ClaimRewards Cosmos Flow" name="Step Confirmed" />
+        <TrackPage category="ClaimRewards Solana Flow" name="Step Confirmed" />
         <SyncOneAccountOnMount priority={10} accountId={optimisticOperation.accountId} />
         <SuccessDisplay
           title={
             <Trans
-              i18nKey={`cosmos.claimRewards.flow.steps.confirmation.success.${
+              i18nKey={`solana.claimRewards.flow.steps.confirmation.success.${
                 transaction?.mode === "claimReward" ? "title" : "titleCompound"
               }`}
             />
@@ -71,7 +71,7 @@ function StepConfirmation({
           description={
             <div>
               <Trans
-                i18nKey={`cosmos.claimRewards.flow.steps.confirmation.success.${
+                i18nKey={`solana.claimRewards.flow.steps.confirmation.success.${
                   transaction?.mode === "claimReward" ? "text" : "textCompound"
                 }`}
                 values={{ amount, validator: v && v.name }}
@@ -88,10 +88,10 @@ function StepConfirmation({
   if (error) {
     return (
       <Container shouldSpace={signed}>
-        <TrackPage category="ClaimRewards Cosmos Flow" name="Step Confirmation Error" />
+        <TrackPage category="ClaimRewards Solana Flow" name="Step Confirmation Error" />
         {signed ? (
           <BroadcastErrorDisclaimer
-            title={<Trans i18nKey="cosmos.claimRewards.flow.steps.confirmation.broadcastError" />}
+            title={<Trans i18nKey="solana.claimRewards.flow.steps.confirmation.broadcastError" />}
           />
         ) : null}
         <ErrorDisplay error={error} withExportLogs />
@@ -128,7 +128,7 @@ export function StepConfirmationFooter({
         <Button
           primary
           ml={2}
-          event="ClaimRewards Cosmos Flow Step 3 View OpD Clicked"
+          event="ClaimRewards Solana Flow Step 3 View OpD Clicked"
           onClick={() => {
             onClose();
             if (account && concernedOperation) {
@@ -140,7 +140,7 @@ export function StepConfirmationFooter({
             }
           }}
         >
-          <Trans i18nKey="cosmos.claimRewards.flow.steps.confirmation.success.cta" />
+          <Trans i18nKey="solana.claimRewards.flow.steps.confirmation.success.cta" />
         </Button>
       ) : error ? (
         <RetryButton primary ml={2} onClick={onRetry} />

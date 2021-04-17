@@ -11,7 +11,7 @@ import { getAccountBridge } from "@ledgerhq/live-common/lib/bridge";
 
 import type { ThemedComponent } from "~/renderer/styles/StyleProvider";
 
-import { useCosmosPreloadData } from "@ledgerhq/live-common/lib/families/cosmos/react";
+import { useSolanaPreloadData } from "@ledgerhq/live-common/lib/families/solana/react";
 
 import TrackPage from "~/renderer/analytics/TrackPage";
 import Box from "~/renderer/components/Box";
@@ -19,7 +19,7 @@ import Button, { Base } from "~/renderer/components/Button";
 import RedelegationSelectorField from "../fields/RedelegationSelectorField";
 import StepRecipientSeparator from "~/renderer/components/StepRecipientSeparator";
 import InfoBox from "~/renderer/components/InfoBox";
-import { AmountField } from "~/renderer/families/cosmos/UndelegationFlowModal/fields/index";
+import { AmountField } from "~/renderer/families/solana/UndelegationFlowModal/fields/index";
 import ErrorBanner from "~/renderer/components/ErrorBanner";
 
 import Label from "~/renderer/components/Label";
@@ -67,15 +67,15 @@ export default function StepValidators({
   t,
   transitionTo,
 }: StepProps) {
-  invariant(account && account.cosmosResources && transaction, "account and transaction required");
+  invariant(account && account.solanaResources && transaction, "account and transaction required");
   const bridge = getAccountBridge(account, parentAccount);
 
   const sourceValidator = useMemo(
     () =>
-      account.cosmosResources?.delegations.find(
-        d => d.validatorAddress === transaction.cosmosSourceValidator,
+      account.solanaResources?.delegations.find(
+        d => d.validatorAddress === transaction.solanaSourceValidator,
       ),
-    [account, transaction.cosmosSourceValidator],
+    [account, transaction.solanaSourceValidator],
   );
 
   const updateRedelegation = useCallback(
@@ -86,13 +86,13 @@ export default function StepValidators({
   );
 
   const updateSourceValidator = useCallback(
-    ({ validatorAddress: cosmosSourceValidator, ...r }) => {
-      const source = account.cosmosResources?.delegations.find(
-        d => d.validatorAddress === cosmosSourceValidator,
+    ({ validatorAddress: solanaSourceValidator, ...r }) => {
+      const source = account.solanaResources?.delegations.find(
+        d => d.validatorAddress === solanaSourceValidator,
       );
       updateRedelegation({
         ...transaction,
-        cosmosSourceValidator,
+        solanaSourceValidator,
         validators:
           transaction.validators && transaction.validators.length > 0
             ? [
@@ -104,7 +104,7 @@ export default function StepValidators({
             : [],
       });
     },
-    [updateRedelegation, transaction, account.cosmosResources],
+    [updateRedelegation, transaction, account.solanaResources],
   );
 
   const onChangeAmount = useCallback(
@@ -132,7 +132,7 @@ export default function StepValidators({
     selectedValidator,
   ]);
 
-  const { validators } = useCosmosPreloadData();
+  const { validators } = useSolanaPreloadData();
 
   const selectedValidatorData = useMemo(
     () =>
@@ -161,7 +161,7 @@ export default function StepValidators({
       <StepRecipientSeparator />
 
       <Box py={4}>
-        <Label mb={5}>{t("cosmos.redelegation.flow.steps.validators.newDelegation")}</Label>
+        <Label mb={5}>{t("solana.redelegation.flow.steps.validators.newDelegation")}</Label>
         <SelectButton onClick={open}>
           <Box flex="1" horizontal alignItems="center" justifyContent="space-between">
             {selectedValidatorData ? (
@@ -176,7 +176,7 @@ export default function StepValidators({
               </Box>
             ) : (
               <Text ff="Inter|Medium">
-                {t("cosmos.redelegation.flow.steps.validators.chooseValidator")}
+                {t("solana.redelegation.flow.steps.validators.chooseValidator")}
               </Text>
             )}
             <Box color="palette.text.shade20">
@@ -193,13 +193,13 @@ export default function StepValidators({
             account={account}
             status={status}
             onChange={onChangeAmount}
-            label={t("cosmos.redelegation.flow.steps.validators.amountLabel")}
+            label={t("solana.redelegation.flow.steps.validators.amountLabel")}
           />
         </Box>
       )}
 
       <InfoBox>
-        <Trans i18nKey="cosmos.redelegation.flow.steps.validators.warning">
+        <Trans i18nKey="solana.redelegation.flow.steps.validators.warning">
           <b></b>
         </Trans>
       </InfoBox>

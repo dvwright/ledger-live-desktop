@@ -15,8 +15,8 @@ import TransactionConfirmField from "~/renderer/components/TransactionConfirm/Tr
 import Text from "~/renderer/components/Text";
 import WarnBox from "~/renderer/components/WarnBox";
 import Box from "~/renderer/components/Box";
-import { useCosmosPreloadData } from "@ledgerhq/live-common/lib/families/cosmos/react";
-import { mapDelegationInfo } from "@ledgerhq/live-common/lib/families/cosmos/logic";
+import { useSolanaPreloadData } from "@ledgerhq/live-common/lib/families/solana/react";
+import { mapDelegationInfo } from "@ledgerhq/live-common/lib/families/solana/logic";
 import { getDefaultExplorerView, getAddressExplorer } from "@ledgerhq/live-common/lib/explorers";
 
 import { openURL } from "~/renderer/linking";
@@ -73,7 +73,7 @@ const onExternalLink = (account, address) => {
   if (URL) openURL(URL);
 };
 
-const CosmosDelegateValidatorsField = ({
+const SolanaDelegateValidatorsField = ({
   account,
   parentAccount,
   transaction,
@@ -81,14 +81,14 @@ const CosmosDelegateValidatorsField = ({
 }: FieldComponentProps) => {
   const mainAccount = getMainAccount(account, parentAccount);
 
-  invariant(transaction.family === "cosmos", "cosmos transaction");
+  invariant(transaction.family === "solana", "solana transaction");
 
   const unit = getAccountUnit(mainAccount);
 
   const { validators } = transaction;
-  const { validators: cosmosValidators } = useCosmosPreloadData();
+  const { validators: solanaValidators } = useSolanaPreloadData();
 
-  const mappedValidators = mapDelegationInfo(validators || [], cosmosValidators, unit);
+  const mappedValidators = mapDelegationInfo(validators || [], solanaValidators, unit);
 
   return mappedValidators && mappedValidators.length > 0 ? (
     <Box vertical justifyContent="space-between" mb={2}>
@@ -121,23 +121,23 @@ const CosmosDelegateValidatorsField = ({
   ) : null;
 };
 
-const CosmosValidatorNameField = ({
+const SolanaValidatorNameField = ({
   account,
   parentAccount,
   transaction,
   field,
 }: FieldComponentProps) => {
-  invariant(transaction.family === "cosmos", "cosmos transaction");
+  invariant(transaction.family === "solana", "solana transaction");
   const mainAccount = getMainAccount(account, parentAccount);
 
   const { validators } = transaction;
-  const { validators: cosmosValidators } = useCosmosPreloadData();
+  const { validators: solanaValidators } = useSolanaPreloadData();
 
   const address = validators && validators.length > 0 ? validators[0].address : null;
 
   const formattedValidator = useMemo(
-    () => (address ? cosmosValidators.find(v => v.validatorAddress === address) : null),
-    [address, cosmosValidators],
+    () => (address ? solanaValidators.find(v => v.validatorAddress === address) : null),
+    [address, solanaValidators],
   );
 
   return address ? (
@@ -159,7 +159,7 @@ const CosmosValidatorNameField = ({
   ) : null;
 };
 
-const CosmosValidatorAmountField = ({
+const SolanaValidatorAmountField = ({
   account,
   parentAccount,
   transaction,
@@ -167,7 +167,7 @@ const CosmosValidatorAmountField = ({
 }: FieldComponentProps) => {
   const mainAccount = getMainAccount(account, parentAccount);
 
-  invariant(transaction.family === "cosmos", "cosmos transaction");
+  invariant(transaction.family === "solana", "solana transaction");
 
   const unit = getAccountUnit(mainAccount);
 
@@ -188,20 +188,20 @@ const CosmosValidatorAmountField = ({
   ) : null;
 };
 
-const CosmosSourceValidatorField = ({
+const SolanaSourceValidatorField = ({
   account,
   parentAccount,
   transaction,
   field,
 }: FieldComponentProps) => {
-  invariant(transaction.family === "cosmos", "cosmos transaction");
+  invariant(transaction.family === "solana", "solana transaction");
   const mainAccount = getMainAccount(account, parentAccount);
 
-  const { cosmosSourceValidator } = transaction;
-  const { validators: cosmosValidators } = useCosmosPreloadData();
+  const { solanaSourceValidator } = transaction;
+  const { validators: solanaValidators } = useSolanaPreloadData();
   const formattedValidator = useMemo(
-    () => cosmosValidators.find(v => v.validatorAddress === cosmosSourceValidator),
-    [cosmosValidators, cosmosSourceValidator],
+    () => solanaValidators.find(v => v.validatorAddress === solanaSourceValidator),
+    [solanaValidators, solanaSourceValidator],
   );
 
   return formattedValidator ? (
@@ -223,8 +223,8 @@ const CosmosSourceValidatorField = ({
   ) : null;
 };
 
-const CosmosMemoField = ({ account, parentAccount, transaction, field }: FieldComponentProps) => {
-  invariant(transaction.family === "cosmos", "cosmos transaction");
+const SolanaMemoField = ({ account, parentAccount, transaction, field }: FieldComponentProps) => {
+  invariant(transaction.family === "solana", "solana transaction");
 
   const { memo } = transaction;
 
@@ -242,7 +242,7 @@ const Warning = ({
   transaction: Transaction,
   recipientWording: string,
 }) => {
-  invariant(transaction.family === "cosmos", "cosmos transaction");
+  invariant(transaction.family === "solana", "solana transaction");
 
   switch (transaction.mode) {
     case "delegate":
@@ -261,7 +261,7 @@ const Warning = ({
 };
 
 const Title = ({ transaction }: { transaction: Transaction }) => {
-  invariant(transaction.family === "cosmos", "cosmos transaction");
+  invariant(transaction.family === "solana", "solana transaction");
 
   return (
     <Info>
@@ -271,11 +271,11 @@ const Title = ({ transaction }: { transaction: Transaction }) => {
 };
 
 const fieldComponents = {
-  "cosmos.memo": CosmosMemoField,
-  "cosmos.delegateValidators": CosmosDelegateValidatorsField,
-  "cosmos.validatorName": CosmosValidatorNameField,
-  "cosmos.validatorAmount": CosmosValidatorAmountField,
-  "cosmos.sourceValidatorName": CosmosSourceValidatorField,
+  "solana.memo": SolanaMemoField,
+  "solana.delegateValidators": SolanaDelegateValidatorsField,
+  "solana.validatorName": SolanaValidatorNameField,
+  "solana.validatorAmount": SolanaValidatorAmountField,
+  "solana.sourceValidatorName": SolanaSourceValidatorField,
 };
 
 export default {

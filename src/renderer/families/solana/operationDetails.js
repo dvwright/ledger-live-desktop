@@ -8,12 +8,12 @@ import { Trans } from "react-i18next";
 import { getAccountCurrency, getAccountUnit } from "@ledgerhq/live-common/lib/account";
 import { formatCurrencyUnit } from "@ledgerhq/live-common/lib/currencies";
 import { getDefaultExplorerView, getAddressExplorer } from "@ledgerhq/live-common/lib/explorers";
-import { useCosmosPreloadData } from "@ledgerhq/live-common/lib/families/cosmos/react";
+import { useSolanaPreloadData } from "@ledgerhq/live-common/lib/families/solana/react";
 import type {
-  CosmosDelegationInfo,
-  CosmosValidatorItem,
-} from "@ledgerhq/live-common/lib/families/cosmos/types";
-import { mapDelegationInfo } from "@ledgerhq/live-common/lib/families/cosmos/logic";
+  SolanaDelegationInfo,
+  SolanaValidatorItem,
+} from "@ledgerhq/live-common/lib/families/solana/types";
+import { mapDelegationInfo } from "@ledgerhq/live-common/lib/families/solana/logic";
 import type { Currency, Unit, Operation, Account } from "@ledgerhq/live-common/lib/types";
 
 import { urls } from "~/config/urls";
@@ -34,13 +34,13 @@ import { localeSelector } from "~/renderer/reducers/settings";
 
 function getURLFeesInfo(op: Operation): ?string {
   if (op.fee.gt(200000)) {
-    return urls.cosmosStakingRewards;
+    return urls.solanaStakingRewards;
   }
 }
 
 function getURLWhatIsThis(op: Operation): ?string {
   if (op.type !== "IN" && op.type !== "OUT") {
-    return urls.cosmosStakingRewards;
+    return urls.solanaStakingRewards;
   }
 }
 
@@ -54,10 +54,10 @@ type OperationDetailsDelegationProps = {
   discreet: boolean,
   unit: Unit,
   currency: Currency,
-  delegations: Array<CosmosDelegationInfo>,
+  delegations: Array<SolanaDelegationInfo>,
   account: Account,
   isTransactionField?: boolean,
-  cosmosValidators: CosmosValidatorItem[],
+  solanaValidators: SolanaValidatorItem[],
 };
 
 export const OperationDetailsDelegation = ({
@@ -67,11 +67,11 @@ export const OperationDetailsDelegation = ({
   delegations,
   account,
   isTransactionField,
-  cosmosValidators,
+  solanaValidators,
 }: OperationDetailsDelegationProps) => {
   const mappedDelegationInfo = useMemo(
-    () => mapDelegationInfo(delegations, cosmosValidators, unit),
-    [delegations, cosmosValidators, unit],
+    () => mapDelegationInfo(delegations, solanaValidators, unit),
+    [delegations, solanaValidators, unit],
   );
 
   return (
@@ -119,7 +119,7 @@ const OperationDetailsExtra = ({ extra, type, account }: OperationDetailsExtraPr
   const currency = getAccountCurrency(account);
   const discreet = useDiscreetMode();
   const locale = useSelector(localeSelector);
-  const { validators: cosmosValidators } = useCosmosPreloadData();
+  const { validators: solanaValidators } = useSolanaPreloadData();
 
   const formatConfig = {
     disableRounding: true,
@@ -143,7 +143,7 @@ const OperationDetailsExtra = ({ extra, type, account }: OperationDetailsExtraPr
           currency={currency}
           delegations={delegations}
           account={account}
-          cosmosValidators={cosmosValidators}
+          solanaValidators={solanaValidators}
         />
       );
     }
@@ -153,7 +153,7 @@ const OperationDetailsExtra = ({ extra, type, account }: OperationDetailsExtraPr
 
       const validator = extra.validators[0];
 
-      const formattedValidator = cosmosValidators.find(
+      const formattedValidator = solanaValidators.find(
         v => v.validatorAddress === validator.address,
       );
 
@@ -182,17 +182,17 @@ const OperationDetailsExtra = ({ extra, type, account }: OperationDetailsExtraPr
       break;
     }
     case "REDELEGATE": {
-      const { cosmosSourceValidator, validators } = extra;
-      if (!validators || validators.length <= 0 || !cosmosSourceValidator) return null;
+      const { solanaSourceValidator, validators } = extra;
+      if (!validators || validators.length <= 0 || !solanaSourceValidator) return null;
 
       const validator = extra.validators[0];
 
-      const formattedValidator = cosmosValidators.find(
+      const formattedValidator = solanaValidators.find(
         v => v.validatorAddress === validator.address,
       );
 
-      const formattedSourceValidator = cosmosValidators.find(
-        v => v.validatorAddress === cosmosSourceValidator,
+      const formattedSourceValidator = solanaValidators.find(
+        v => v.validatorAddress === solanaSourceValidator,
       );
 
       const formattedAmount = formatCurrencyUnit(unit, BigNumber(validator.amount), formatConfig);
@@ -204,8 +204,8 @@ const OperationDetailsExtra = ({ extra, type, account }: OperationDetailsExtraPr
             <OpDetailsTitle>
               <Trans i18nKey={"operationDetails.extra.redelegatedFrom"} />
             </OpDetailsTitle>
-            <Address onClick={redirectAddress(currency, cosmosSourceValidator)}>
-              {formattedSourceValidator ? formattedSourceValidator.name : cosmosSourceValidator}
+            <Address onClick={redirectAddress(currency, solanaSourceValidator)}>
+              {formattedSourceValidator ? formattedSourceValidator.name : solanaSourceValidator}
             </Address>
           </OpDetailsData>
           <B />
@@ -234,7 +234,7 @@ const OperationDetailsExtra = ({ extra, type, account }: OperationDetailsExtraPr
 
       const validator = extra.validators[0];
 
-      const formattedValidator = cosmosValidators.find(
+      const formattedValidator = solanaValidators.find(
         v => v.validatorAddress === validator.address,
       );
 

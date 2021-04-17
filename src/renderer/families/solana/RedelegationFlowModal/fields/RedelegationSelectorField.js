@@ -1,11 +1,11 @@
 // @flow
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useCosmosDelegationsQuerySelector } from "@ledgerhq/live-common/lib/families/cosmos/react";
+import { useSolanaDelegationsQuerySelector } from "@ledgerhq/live-common/lib/families/solana/react";
 import type {
-  CosmosMappedDelegation,
+  SolanaMappedDelegation,
   Transaction,
-} from "@ledgerhq/live-common/lib/families/cosmos/types";
+} from "@ledgerhq/live-common/lib/families/solana/types";
 import type { Account } from "@ledgerhq/live-common/lib/types";
 import Box from "~/renderer/components/Box";
 import FirstLetterIcon from "~/renderer/components/FirstLetterIcon";
@@ -16,7 +16,7 @@ import Text from "~/renderer/components/Text";
 const renderItem = ({
   data: { validatorAddress, validator, formattedAmount, status },
 }: {
-  data: CosmosMappedDelegation,
+  data: SolanaMappedDelegation,
 }) => {
   const name = validator?.name ?? validatorAddress;
   return (
@@ -33,7 +33,7 @@ const renderItem = ({
 type RedelegationSelectorFieldProps = {
   account: Account,
   transaction: Transaction,
-  onChange: (delegation: CosmosMappedDelegation) => void,
+  onChange: (delegation: SolanaMappedDelegation) => void,
 };
 
 export default function RedelegationSelectorField({
@@ -42,14 +42,14 @@ export default function RedelegationSelectorField({
   onChange,
 }: RedelegationSelectorFieldProps) {
   const { t } = useTranslation();
-  const { query, setQuery, options, value } = useCosmosDelegationsQuerySelector(
+  const { query, setQuery, options, value } = useSolanaDelegationsQuerySelector(
     account,
     transaction,
   );
 
   return (
     <Box flow={1} pb={5}>
-      <Label>{t("cosmos.redelegation.flow.steps.validators.currentDelegation")}</Label>
+      <Label>{t("solana.redelegation.flow.steps.validators.currentDelegation")}</Label>
       <Select
         value={value}
         options={options}

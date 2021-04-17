@@ -2,7 +2,7 @@
 import type { Device } from "@ledgerhq/live-common/lib/hw/actions/types";
 import type { Step } from "~/renderer/components/Stepper";
 import type { Account, TransactionStatus, Operation } from "@ledgerhq/live-common/lib/types";
-import type { Transaction } from "@ledgerhq/live-common/lib/families/cosmos/types";
+import type { Transaction } from "@ledgerhq/live-common/lib/families/solana/types";
 
 export type StepId = "amount" | "device" | "confirmation";
 

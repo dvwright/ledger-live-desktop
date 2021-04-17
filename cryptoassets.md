@@ -83,7 +83,7 @@
 | Ravencoin | RVN | NO | ravencoin |
 | Resistance | RES | NO | resistance |
 | Rise | RISE | NO | rise |
-| Solana | SOL | NO | solana |
+| Solana | SOL | YES | solana |
 | Thundercore | TT | NO | thundercore |
 | TomoChain | TOMO | NO | tomo |
 | Ubiq | UBQ | NO | ubiq |

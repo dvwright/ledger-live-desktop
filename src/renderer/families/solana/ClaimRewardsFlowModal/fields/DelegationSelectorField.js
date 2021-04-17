@@ -1,7 +1,7 @@
 // @flow
 import React from "react";
-import { useCosmosDelegationsQuerySelector } from "@ledgerhq/live-common/lib/families/cosmos/react";
-import type { CosmosMappedDelegation } from "@ledgerhq/live-common/lib/families/cosmos/types";
+import { useSolanaDelegationsQuerySelector } from "@ledgerhq/live-common/lib/families/solana/react";
+import type { SolanaMappedDelegation } from "@ledgerhq/live-common/lib/families/solana/types";
 import Box from "~/renderer/components/Box";
 import FirstLetterIcon from "~/renderer/components/FirstLetterIcon";
 import Label from "~/renderer/components/Label";
@@ -11,7 +11,7 @@ import Text from "~/renderer/components/Text";
 const renderItem = ({
   data: { validatorAddress, validator, formattedPendingRewards, status },
 }: {
-  data: CosmosMappedDelegation,
+  data: SolanaMappedDelegation,
 }) => {
   const name = validator?.name ?? validatorAddress;
   return (
@@ -26,14 +26,14 @@ const renderItem = ({
 };
 
 export default function DelegationSelectorField({ account, transaction, t, onChange }: *) {
-  const { query, setQuery, options, value } = useCosmosDelegationsQuerySelector(
+  const { query, setQuery, options, value } = useSolanaDelegationsQuerySelector(
     account,
     transaction,
   );
 
   return (
     <Box flow={1} mt={5}>
-      <Label>{t("cosmos.claimRewards.flow.steps.claimRewards.selectLabel")}</Label>
+      <Label>{t("solana.claimRewards.flow.steps.claimRewards.selectLabel")}</Label>
       <Select
         value={value}
         options={options}

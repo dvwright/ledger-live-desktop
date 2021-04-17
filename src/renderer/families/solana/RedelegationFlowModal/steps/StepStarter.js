@@ -30,7 +30,7 @@ export default function StepStarter({
   bridgePending,
   t,
 }: StepProps) {
-  invariant(account && account.cosmosResources && transaction, "account and transaction required");
+  invariant(account && account.solanaResources && transaction, "account and transaction required");
   return (
     <Box flow={4}>
       <TrackPage category="Redelegation Flow" name="Step Starter" />
@@ -46,11 +46,11 @@ export default function StepStarter({
             color="palette.text.shade80"
             style={{ lineHeight: 1.57 }}
           >
-            <Trans i18nKey="cosmos.redelegation.flow.steps.starter.description" />
+            <Trans i18nKey="solana.redelegation.flow.steps.starter.description" />
           </Text>
         </Box>
         <InfoBox>
-          <Trans i18nKey="cosmos.redelegation.flow.steps.starter.warning">
+          <Trans i18nKey="solana.redelegation.flow.steps.starter.warning">
             <b></b>
           </Trans>
         </InfoBox>
@@ -72,8 +72,8 @@ export function StepStarterFooter({
   return (
     <>
       <LinkWithExternalIcon
-        label={<Trans i18nKey="cosmos.redelegation.flow.steps.starter.howDelegationWorks" />}
-        onClick={() => openURL(urls.stakingCosmos)}
+        label={<Trans i18nKey="solana.redelegation.flow.steps.starter.howDelegationWorks" />}
+        onClick={() => openURL(urls.stakingSolana)}
       />
       <Box horizontal>
         <Button mr={1} secondary onClick={onClose}>

@@ -6,10 +6,10 @@ import styled from "styled-components";
 import type { ThemedComponent } from "~/renderer/styles/StyleProvider";
 
 import {
-  useCosmosPreloadData,
+  useSolanaPreloadData,
   useSortedValidators,
-  useCosmosMappedDelegations,
-} from "@ledgerhq/live-common/lib/families/cosmos/react";
+  useSolanaMappedDelegations,
+} from "@ledgerhq/live-common/lib/families/solana/react";
 import { getAccountUnit } from "@ledgerhq/live-common/lib/account";
 import { getDefaultExplorerView, getAddressExplorer } from "@ledgerhq/live-common/lib/explorers";
 
@@ -32,14 +32,14 @@ const ValidatorsSection: ThemedComponent<{}> = styled(Box)`
 `;
 
 export default function ValidatorField({ account, transaction, t, onChange }: *) {
-  const { validators } = useCosmosPreloadData();
-  const { cosmosResources } = account;
+  const { validators } = useSolanaPreloadData();
+  const { solanaResources } = account;
 
-  invariant(cosmosResources, "cosmosResources required");
+  invariant(solanaResources, "solanaResources required");
 
   const unit = getAccountUnit(account);
 
-  const formattedDelegations = cosmosResources.delegations.map(({ validatorAddress, ...d }) => ({
+  const formattedDelegations = solanaResources.delegations.map(({ validatorAddress, ...d }) => ({
     ...d,
     address: validatorAddress,
   }));
@@ -48,12 +48,12 @@ export default function ValidatorField({ account, transaction, t, onChange }: *)
   const onSearch = useCallback(evt => setSearch(evt.target.value), [setSearch]);
 
   const sortedValidators = useSortedValidators(search, validators, formattedDelegations);
-  const fromValidatorAddress = transaction.cosmosSourceValidator;
+  const fromValidatorAddress = transaction.solanaSourceValidator;
   const sortedFilteredValidators = sortedValidators.filter(
     v => v.validator.validatorAddress !== fromValidatorAddress,
   );
 
-  const mappedDelegations = useCosmosMappedDelegations(account);
+  const mappedDelegations = useSolanaMappedDelegations(account);
 
   const explorerView = getDefaultExplorerView(account.currency);
 
@@ -88,7 +88,7 @@ export default function ValidatorField({ account, transaction, t, onChange }: *)
           subtitle={
             d ? (
               <Trans
-                i18nKey="cosmos.delegation.currentDelegation"
+                i18nKey="solana.delegation.currentDelegation"
                 values={{ amount: d.formattedAmount }}
               >
                 <b></b>
@@ -103,7 +103,7 @@ export default function ValidatorField({ account, transaction, t, onChange }: *)
                   : "N/A"}
               </Text>
               <Text textAlign="center" fontSize={1}>
-                <Trans i18nKey="cosmos.delegation.estYield" />
+                <Trans i18nKey="solana.delegation.estYield" />
               </Text>
             </Box>
           }

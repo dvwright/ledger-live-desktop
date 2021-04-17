@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { Trans } from "react-i18next";
 
 import { getMainAccount } from "@ledgerhq/live-common/lib/account";
-import { canDelegate } from "@ledgerhq/live-common/lib/families/cosmos/logic";
+import { canDelegate } from "@ledgerhq/live-common/lib/families/solana/logic";
 
 import type { ThemedComponent } from "~/renderer/styles/StyleProvider";
 import type { Account, AccountLike } from "@ledgerhq/live-common/lib/types";
@@ -32,9 +32,9 @@ const AccountHeaderActions = ({ account, parentAccount }: Props) => {
   const dispatch = useDispatch();
   const mainAccount = getMainAccount(account, parentAccount);
 
-  const { cosmosResources } = mainAccount;
-  invariant(cosmosResources, "cosmos account expected");
-  const { delegations } = cosmosResources;
+  const { solanaResources } = mainAccount;
+  invariant(solanaResources, "solana account expected");
+  const { delegations } = solanaResources;
   const earnRewardEnabled = canDelegate(mainAccount);
 
   const onClick = useCallback(() => {
@@ -49,7 +49,7 @@ const AccountHeaderActions = ({ account, parentAccount }: Props) => {
 
   return (
     <ToolTip
-      content={!earnRewardEnabled ? <Trans i18nKey="cosmos.delegation.minSafeWarning" /> : null}
+      content={!earnRewardEnabled ? <Trans i18nKey="solana.delegation.minSafeWarning" /> : null}
     >
       <ButtonBase primary disabled={!earnRewardEnabled} onClick={onClick}>
         <Box horizontal flow={1} alignItems="center">

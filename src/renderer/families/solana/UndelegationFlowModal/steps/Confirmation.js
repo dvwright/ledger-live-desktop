@@ -14,7 +14,7 @@ import SuccessDisplay from "~/renderer/components/SuccessDisplay";
 import type { ThemedComponent } from "~/renderer/styles/StyleProvider";
 import type { StepProps } from "../types";
 
-import { useCosmosPreloadData } from "@ledgerhq/live-common/lib/families/cosmos/react";
+import { useSolanaPreloadData } from "@ledgerhq/live-common/lib/families/solana/react";
 import { getAccountUnit } from "@ledgerhq/live-common/lib/account";
 import { formatCurrencyUnit } from "@ledgerhq/live-common/lib/currencies";
 import { localeSelector } from "~/renderer/reducers/settings";
@@ -28,7 +28,7 @@ export default function StepConfirmation({
   transaction,
 }: StepProps) {
   const { t } = useTranslation();
-  const { validators } = useCosmosPreloadData();
+  const { validators } = useSolanaPreloadData();
   const locale = useSelector(localeSelector);
 
   if (optimisticOperation) {
@@ -45,14 +45,14 @@ export default function StepConfirmation({
 
     return (
       <Container>
-        <TrackPage category="Undelegation Cosmos Flow" name="Step Confirmed" />
+        <TrackPage category="Undelegation Solana Flow" name="Step Confirmed" />
         <SyncOneAccountOnMount priority={10} accountId={optimisticOperation.accountId} />
         <SuccessDisplay
-          title={t("cosmos.undelegation.flow.steps.confirmation.success.title")}
+          title={t("solana.undelegation.flow.steps.confirmation.success.title")}
           description={
             <div>
               <Trans
-                i18nKey="cosmos.undelegation.flow.steps.confirmation.success.description"
+                i18nKey="solana.undelegation.flow.steps.confirmation.success.description"
                 values={{
                   amount,
                   validator: v && v.name,
@@ -70,10 +70,10 @@ export default function StepConfirmation({
   if (error) {
     return (
       <Container shouldSpace={signed}>
-        <TrackPage category="Undelegation Cosmos Flow" name="Step Confirmation Error" />
+        <TrackPage category="Undelegation Solana Flow" name="Step Confirmation Error" />
         {signed ? (
           <BroadcastErrorDisclaimer
-            title={t("cosmos.undelegation.flow.steps.confirmation.broadcastError")}
+            title={t("solana.undelegation.flow.steps.confirmation.broadcastError")}
           />
         ) : null}
         <ErrorDisplay error={error} withExportLogs />
@@ -130,10 +130,10 @@ export function StepConfirmationFooter({
         <Button
           primary
           ml={2}
-          event="Undelegation Cosmos Flow Step 3 View OpD Clicked"
+          event="Undelegation Solana Flow Step 3 View OpD Clicked"
           onClick={onViewDetails}
         >
-          {t("cosmos.undelegation.flow.steps.confirmation.success.cta")}
+          {t("solana.undelegation.flow.steps.confirmation.success.cta")}
         </Button>
       ) : error ? (
         <RetryButton primary ml={2} onClick={onRetry} />

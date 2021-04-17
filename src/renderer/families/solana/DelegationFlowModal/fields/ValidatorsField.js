@@ -9,19 +9,19 @@ import { getAccountUnit } from "@ledgerhq/live-common/lib/account";
 import { getDefaultExplorerView, getAddressExplorer } from "@ledgerhq/live-common/lib/explorers";
 import type { Account, TransactionStatus } from "@ledgerhq/live-common/lib/types";
 import {
-  useCosmosPreloadData,
+  useSolanaPreloadData,
   useSortedValidators,
-} from "@ledgerhq/live-common/lib/families/cosmos/react";
+} from "@ledgerhq/live-common/lib/families/solana/react";
 import {
   COSMOS_MAX_DELEGATIONS,
   mapDelegations,
   getMaxDelegationAvailable,
-} from "@ledgerhq/live-common/lib/families/cosmos/logic";
+} from "@ledgerhq/live-common/lib/families/solana/logic";
 import type {
-  CosmosDelegation,
-  CosmosDelegationInfo,
-  CosmosMappedValidator,
-} from "@ledgerhq/live-common/lib/families/cosmos/types";
+  SolanaDelegation,
+  SolanaDelegationInfo,
+  SolanaMappedValidator,
+} from "@ledgerhq/live-common/lib/families/solana/types";
 import { formatCurrencyUnit } from "@ledgerhq/live-common/lib/currencies";
 
 import { openURL } from "~/renderer/linking";
@@ -37,11 +37,11 @@ import Text from "~/renderer/components/Text";
 
 type Props = {
   t: TFunction,
-  validators: CosmosDelegationInfo[],
-  delegations: CosmosDelegation[],
+  validators: SolanaDelegationInfo[],
+  delegations: SolanaDelegation[],
   account: Account,
   status: TransactionStatus,
-  onChangeDelegations: (updater: (CosmosDelegationInfo[]) => CosmosDelegationInfo[]) => void,
+  onChangeDelegations: (updater: (SolanaDelegationInfo[]) => SolanaDelegationInfo[]) => void,
   bridgePending: boolean,
 };
 
@@ -54,11 +54,11 @@ const ValidatorField = ({
   delegations,
   validators,
 }: Props) => {
-  invariant(account, "cosmos account required");
+  invariant(account, "solana account required");
 
   const [search, setSearch] = useState("");
-  const { cosmosResources } = account;
-  invariant(cosmosResources && delegations, "cosmos transaction required");
+  const { solanaResources } = account;
+  invariant(solanaResources && delegations, "solana transaction required");
 
   const unit = getAccountUnit(account);
 
@@ -67,9 +67,9 @@ const ValidatorField = ({
     address: validatorAddress,
   }));
 
-  const { validators: cosmosValidators } = useCosmosPreloadData();
-  const SR = useSortedValidators(search, cosmosValidators, formattedDelegations);
-  const currentDelegations = mapDelegations(delegations, cosmosValidators, unit);
+  const { validators: solanaValidators } = useSolanaPreloadData();
+  const SR = useSortedValidators(search, solanaValidators, formattedDelegations);
+  const currentDelegations = mapDelegations(delegations, solanaValidators, unit);
 
   const delegationsUsed = validators.reduce((sum, v) => sum.plus(v.amount), BigNumber(0));
   const delegationsSelected = validators.length;
@@ -118,7 +118,7 @@ const ValidatorField = ({
   }, []);
 
   const renderItem = useCallback(
-    ({ validator, rank }: CosmosMappedValidator, i) => {
+    ({ validator, rank }: SolanaMappedValidator, i) => {
       const item = validators.find(v => v.address === validator.validatorAddress);
       const d = currentDelegations.find(v => v.validatorAddress === validator.validatorAddress);
 
@@ -145,7 +145,7 @@ const ValidatorField = ({
           subtitle={
             d ? (
               <Trans
-                i18nKey="cosmos.delegation.currentDelegation"
+                i18nKey="solana.delegation.currentDelegation"
                 values={{ amount: d.formattedAmount }}
               >
                 <b style={{ marginLeft: 5 }}></b>
@@ -161,7 +161,7 @@ const ValidatorField = ({
                   : "N/A"}
               </Text>
               <Text textAlign="center" fontSize={1}>
-                <Trans i18nKey="cosmos.delegation.estYield" />
+                <Trans i18nKey="solana.delegation.estYield" />
               </Text>
             </Box>
           }

@@ -5,7 +5,7 @@ import React, { useCallback, useMemo } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { getAccountBridge } from "@ledgerhq/live-common/lib/bridge";
 import type { StepProps } from "../types";
-import type { CosmosMappedDelegation } from "@ledgerhq/live-common/lib/families/cosmos/types";
+import type { SolanaMappedDelegation } from "@ledgerhq/live-common/lib/families/solana/types";
 import TrackPage from "~/renderer/analytics/TrackPage";
 import Box from "~/renderer/components/Box";
 import Button from "~/renderer/components/Button";
@@ -44,7 +44,7 @@ export default function StepAmount({
   );
 
   const onChangeValidator = useCallback(
-    ({ validatorAddress, amount }: CosmosMappedDelegation) => {
+    ({ validatorAddress, amount }: SolanaMappedDelegation) => {
       updateValidator({ address: validatorAddress, amount });
     },
     [updateValidator],
@@ -69,7 +69,7 @@ export default function StepAmount({
       {error && <ErrorBanner error={error} />}
       <Box horizontal justifyContent="center" mb={2}>
         <Text ff="Inter|Medium" fontSize={4}>
-          <Trans i18nKey="cosmos.undelegation.flow.steps.amount.subtitle">
+          <Trans i18nKey="solana.undelegation.flow.steps.amount.subtitle">
             <b></b>
           </Trans>
         </Text>
@@ -81,11 +81,11 @@ export default function StepAmount({
         account={account}
         status={status}
         onChange={onChangeAmount}
-        label={<Trans i18nKey="cosmos.undelegation.flow.steps.amount.fields.amount" />}
+        label={<Trans i18nKey="solana.undelegation.flow.steps.amount.fields.amount" />}
       />
       <Box mt={2}>
         <InfoBox>
-          <Trans i18nKey="cosmos.undelegation.flow.steps.amount.warning">
+          <Trans i18nKey="solana.undelegation.flow.steps.amount.warning">
             <b></b>
           </Trans>
         </InfoBox>

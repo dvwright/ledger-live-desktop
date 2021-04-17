@@ -63,13 +63,13 @@ type Props = {
 const AccountBalanceSummaryFooter = ({ account, countervalue }: Props) => {
   const discreet = useDiscreetMode();
   const locale = useSelector(localeSelector);
-  if (!account.cosmosResources) return null;
+  if (!account.solanaResources) return null;
 
-  const { spendableBalance: _spendableBalance, cosmosResources } = account;
+  const { spendableBalance: _spendableBalance, solanaResources } = account;
   const {
     delegatedBalance: _delegatedBalance,
     unbondingBalance: _unbondingBalance,
-  } = cosmosResources;
+  } = solanaResources;
 
   const unit = getAccountUnit(account);
 
